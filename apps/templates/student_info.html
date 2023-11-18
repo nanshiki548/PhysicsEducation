@@ -1,72 +1,77 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>座席表アプリ</title>
+    <title>{{ student.name }}</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
-    <div class="menu-bar">
-        <ul>
-            <li><a href="#" onclick="switchMenuBarMode('studentDisplay')">生徒画面表示</a></li>
-            <li><a href="#" onclick="switchMenuBarMode('classificationList')">記述一覧表示</a></li>
-        </ul>
-    </div>    
-    <div class="left-container">
+    <div class="right-container">
         <div class="color-classification"></div>
     </div>
     <div class="center-container">
-        <div class="blackboard">
-            黒板
-        </div>
-    </div>    
-    <div class="seats"></div>
-    <div style="display: flex; margin-top: 30px; text-align: left;">
-        <div class="info-box" style="border: 1px solid #ccc; padding: 10px; margin-right: 10px;">
-            <span class="info-box-label">選択肢</span>
-            <pre><span>{{ answer_options | safe }}</span></pre>
-        </div>   
-        <!-- <div class="info-box" style="border: 1px solid #ccc; padding: 10px; margin-right: 10px;">
-            <span class="info-box-label">正答</span>
-            <pre><span>{{ correct_answer_option | safe }}</span></pre>
-        </div> -->
-        <div class="info-box" style="border: 1px solid #ccc; padding: 10px; margin-right: 10px;">
-            <span class="info-box-label">選択肢ごとの誤概念</span>
-            <pre><span>{{ misconception | safe }}</span></pre>
-        </div>                    
+        <h3>活発な議論を目指そう！{{ student.name }}</h3>
+    </div>
+    <div class="mainContainer">
+        <img src="{{ url_for('static', filename='image/mondai.png') }}" alt="説明テキスト" >
+        <div class="seats2"></div>  
     </div>
     
+    <div class="underContainer">
+        <!-- 画像を表示 -->
+        <img src="{{ url_for('static', filename='image/aiteacher.png') }}" alt="先生画像">
+
+        <details>
+            <summary>あなたの回答を表示</summary>
+            <p class="answer-content">あなたの回答：{{student.answer}}</p>
+        </details>
+        <details>
+            <summary>分類結果</summary>
+            <p>分類結果：{{student.classification}}</p>
+        </details>
+        <details>
+            <summary>質問の提案</summary>
+            <p>質問の提案：{{student.question}}</p>
+        </details>
+
+        <div class="chat-container">
+            <div class="chat-header">
+                <strong><p>一緒に回答を作成しよう</p></strong>
+            </div>
+            <div class="chat-messages">
+                <!-- Initial message from AI -->
+                <div class="message received">回答を送信してください！</div>
+            </div>
+            <div class="chat-input">
+                <textarea placeholder="メッセージを入力..."></textarea>
+                <button>送信</button>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
 
     <script>
-        // 生徒データの配列
-        const studentData = {{ student_datas|tojson|safe }};
-        // const studentData = [
-        //     { id: 1, name: "山田太郎", answer: "", classification: "サッカー部", question: '' },
-        //     { id: 2, name: "佐藤花子", answer: "", classification: "バスケ部", question: '' },
-        //     { id: 3, name: "山田太郎", answer: "", classification: "サッカー部" , question: '' },
-        const totalSeats = Array.from({ length: 44 }, (_, i) => i + 1);
+        const team_member_Data = {{ team_members|tojson|safe }};
+        const totalSeats = Array.from({ length: {{num_students_per_team}} }, (_, i) => {{student.id}} + i);
         const seats = {};
         for (const seat of totalSeats) {
-            const student = studentData.find(s => s.id === seat) || null;
-            seats[seat] = { student };
+            const team_menber = team_member_Data.find(s => s.id === seat) || null;
+            seats[seat] = { team_menber };
         }
 
-        const classificationColors = {};
-
-        // 座席を初期化する関数
         function initializeSeats() {
-            const container = document.querySelector('.seats');
+            const container = document.querySelector('.seats2');
             for (const seat in seats) {
                 const div = document.createElement('div');
                 div.classList.add('seat');
-                div.textContent = seats[seat].student ? seats[seat].student.name : seat;
+                div.textContent = seats[seat].team_menber ? seats[seat].team_menber.name : seat;
                 div.setAttribute('data-seat', seat);
-                if (seats[seat].student) {
-                    div.style.backgroundColor = getColor(seats[seat].student.classification);
+                if (seats[seat].team_menber) {
+                    div.style.backgroundColor = getColor(seats[seat].team_menber.classification);
                 }
                 div.addEventListener('click', function(event) {
                     const seat = event.currentTarget.getAttribute('data-seat');
@@ -76,102 +81,66 @@
             }
         }
 
-        // メニューバーのモード
-        let menuBarMode = 'studentDisplay';  // デフォルトは「生徒画面表示」
-        const infoDisplay = document.querySelector('.infoDisplay');
+        const classificationColors = {};
         const tooltip = document.createElement('div');
         tooltip.classList.add('tooltip');
         document.body.appendChild(tooltip);
 
-        // メニューバーのモードを切り替える関数
-        function switchMenuBarMode(mode) {
-            menuBarMode = mode;
-            if (menuBarMode === 'classificationList') {
-                infoDisplay.style.display = 'block';
-            } else {
-                infoDisplay.style.display = 'none';
-            }
-        }
-
-        // 生徒の情報を表示する関数
         function showStudentInfo(event, seatKey) {
             const seatData = seats[seatKey];
-
-            if (menuBarMode === 'studentDisplay') {
-                if (seatData.student) {
-                    tooltip.innerHTML = `
-                        <div><span class="info-box-label">生徒名</span> ${seatData.student.name}</div>
-                        <div><span class="info-box-label">出席番号</span> ${seatData.student.id}</div>
-                        <div><span class="info-box-label">分類結果</span> ${seatData.student.classification}</div>
-                        <div><span class="info-box-label">記述内容</span> ${seatData.student.answer}</div>
-                        <div><span class="info-box-label">質問</span> ${seatData.student.question}</div>
-                    `;
-
-                } else {
-                    tooltip.innerHTML = 'この座席には生徒の情報がありません。';
-                }
-            
-                const isRightOfCenter = event.clientX > window.innerWidth / 2;
-            
-                if (isRightOfCenter) {
-                    tooltip.classList.remove('right');
-                    tooltip.classList.add('left');
-                    tooltip.style.left = event.clientX - tooltip.offsetWidth - 20 + 'px';
-                } else {
-                    tooltip.classList.remove('left');
-                    tooltip.classList.add('right');
-                    tooltip.style.left = event.clientX + 20 + 'px';
-                }
-                tooltip.style.top = event.clientY - tooltip.offsetHeight / 2 + 'px';
-                tooltip.style.display = 'block';
-            } else if (menuBarMode === 'classificationList') {
-                // この部分を追加: 生徒に関するページに遷移
-                if (seatData.student) {
-                    window.location.href = `/student/${seatData.student.id}`;
-                }
+            if (seatData.team_menber) {
+                tooltip.innerHTML = `
+                    <div><span class="info-box-label">生徒名</span> ${seatData.team_menber.name}</div>
+                    <div><span class="info-box-label">出席番号</span> ${seatData.team_menber.id}</div>
+                    <div><span class="info-box-label">分類結果</span> ${seatData.team_menber.classification}</div>
+                    <div><span class="info-box-label">記述内容</span> ${seatData.team_menber.answer}</div>
+                    <div><span class="info-box-label">質問</span> ${seatData.team_menber.question}</div>
+                `;
+            } else {
+                tooltip.innerHTML = 'この座席には生徒の情報がありません。';
             }
+            const isRightOfCenter = event.clientX > window.innerWidth / 2;
+            
+            if (isRightOfCenter) {
+                tooltip.classList.remove('right');
+                tooltip.classList.add('left');
+                tooltip.style.left = event.clientX - tooltip.offsetWidth - 20 + 'px';
+            } else {
+                tooltip.classList.remove('left');
+                tooltip.classList.add('right');
+                tooltip.style.left = event.clientX + 20 + 'px';
+            }
+            tooltip.style.top = event.clientY - tooltip.offsetHeight / 2 + 'px';
+            tooltip.style.display = 'block';
         }
 
-        // 他の場所をクリックした場合、ツールチップを非表示にする
         document.addEventListener('click', function(event) {
             if (event.target.className !== 'seat') {
                 hideTooltip();
             }
         });
 
-        // ツールチップを非表示にする関数
         function hideTooltip() {
             tooltip.style.display = 'none';
         }
 
-        // 既に選択された色を保存する配列
         const selectedColors = [];
-        // 最後に使用した色相
         let lastHue = 0;
-
-        // 色相のステップ（45度ずつ色相を変える）
         const hueStep = 137;
 
-        // 分類に基づいて色を取得する関数
         function getColor(classification) {
             if (!classificationColors.hasOwnProperty(classification)) {
                 let newColor;
                 do {
-                    // 次の色相を計算
                     lastHue = (lastHue + hueStep) % 360;
-                    // 新しい色を生成
                     newColor = `hsl(${lastHue}, 70%, 70%)`;
                 } while (selectedColors.includes(newColor));
-                // 新しい色を保存
                 selectedColors.push(newColor);
-                // 分類に色を割り当て
                 classificationColors[classification] = newColor;
             }
             return classificationColors[classification];
         }
 
-
-        // 色の説明を生成する関数
         function generateColorLegend() {
             const legendContainer = document.querySelector('.color-classification');
             legendContainer.innerHTML = '';
@@ -192,9 +161,74 @@
             }
         }
 
-        // 座席と色の説明を初期化
+        // メッセージを送信するための関数
+        function sendMessage() {
+            const textarea = document.querySelector(".chat-input textarea");
+            const messagesContainer = document.querySelector(".chat-messages");
+
+            // メッセージが空でない場合のみ送信
+            if (textarea.value.trim() !== "") {
+                const messageElement = document.createElement("div");
+                messageElement.classList.add("message");
+                messageElement.classList.add("sent");
+                messageElement.textContent = textarea.value;
+
+                messagesContainer.appendChild(messageElement);
+
+                // ユーザーのメッセージを送信
+                fetch("/send_message", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ message: textarea.value })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // OpenAIからの返信を表示領域に追加
+                        const responseElement = document.createElement("div");
+                        responseElement.classList.add("message");
+                        responseElement.classList.add("received");
+                        responseElement.textContent = data.response_message;
+
+                        messagesContainer.appendChild(responseElement);
+                        // 最新のメッセージが表示されるようにスクロール
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    } else {
+                        console.error("Failed to send message:", data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+
+
+                // テキストエリアをクリア
+                textarea.value = "";
+                // 最新のメッセージが表示されるようにスクロール
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+
+        // 送信ボタンにイベントリスナーを追加
+        const sendButton = document.querySelector(".chat-input button");
+        sendButton.addEventListener("click", sendMessage);
+
+        // Enterキーを押すとメッセージを送信
+        document.querySelector(".chat-input textarea").addEventListener("keypress", function(event) {
+            if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+
+
         initializeSeats();
         generateColorLegend();
+
+
+
     </script>
 </body>
 </html>

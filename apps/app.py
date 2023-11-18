@@ -10,16 +10,11 @@ app = Flask(__name__, static_folder="static")
 
 # 設定ファイルから情報を取得
 spreadsheet_url = config.spreadsheet_url
-json_keyfile_path = (
-    "/Users/matsudatatsuya/gpt_sample/voltaic-space-388911-7adfbc11d865.json"
-)
+json_keyfile_path = config.json_keyfile_path
 openai.api_key = config.openai_api_key
 
 # スコープ設定と認証情報の設定
-scope = [
-    "https://spreadsheets.google.com/feeds",
-    "https://www.googleapis.com/auth/drive",
-]
+scope = config.scope
 credentials = ServiceAccountCredentials.from_json_keyfile_name(json_keyfile_path, scope)
 
 # Googleスプレッドシートへのアクセスとデータ取得
@@ -168,7 +163,7 @@ def index():
         },
         {"role": "user", "content": initial_question},
     ]
-    answer_options = analyze_with_gpt4(messages1, 0.45)
+    answer_options = analyze_with_gpt3(messages1, 0.45)
     # answer_options = analyze_with_gpt3(messages1, 0.45)
     answer_options_list = answer_options.split(" . ")
     # print(answer_options_list)
@@ -194,7 +189,7 @@ def index():
         },
         {"role": "user", "content": answer_options},
     ]
-    misconception = analyze_with_gpt4(messages2)
+    misconception = analyze_with_gpt3(messages2)
     # misconception = analyze_with_gpt3(messages2)
     misconception_list = misconception.split(" . ")
     misconception = list_to_string(
@@ -230,7 +225,7 @@ def index():
             },
             {"role": "user", "content": student_text},
         ]
-        provisional_question = analyze_with_gpt4(messages4, 0.6, 100)
+        provisional_question = analyze_with_gpt3(messages4, 0.6, 100)
         # provisional_question = analyze_with_gpt3(messages4, 0.6, 100)
 
         student_data = {
