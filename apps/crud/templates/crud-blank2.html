@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>課題一覧</title>
+
+    <!-- Custom fonts for this template-->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='image/buturiicon.png') }}">
+    <link href="{{url_for('static', filename='css/all.min.css')}}" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="{{url_for('static', filename='css/sb-admin-2.min.css')}}" rel="stylesheet">
+    <link href="{{url_for('crud.static', filename='css/crud-blank2.css')}}" rel="stylesheet" >
+
+</head>
+
+<body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        <!-- Sidebar -->
+        {% include 'sidebar.html' %}
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Topbar -->
+                {% include 'topbar.html' %}
+                <!-- Begin Page Content -->
+                    <div class="container-fluid">
+                        <!-- ナビゲーションバー -->
+                        {% include 'navibar.html' %}
+                    
+                        <!-- 作成メニュー -->
+                        <div class="mb-2" style="text-align: left;">
+                            <div class="nav flex-column">
+                                <a class="nav-link" href="{{url_for('crud.assignment', class_id=class_data.id)}}">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    課題
+                                </a>
+                                <a class="nav-link" href="#">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    資料
+                                </a>
+                                <a class="nav-link" href="#">
+                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    投稿を再利用
+                                </a>
+                                <button type="button" class="nav-link btn btn-link" data-toggle="modal" data-target="#topicModal">
+                                    <i class="fas fa-plus-circle"></i>
+                                    トピックを作成
+                                </button>
+                            </div>
+                        </div>
+                        <!-- トピック追加用モーダル -->
+                        <div class="modal fade" id="topicModal" tabindex="-1" role="dialog" aria-labelledby="topicModalLabel" aria-hidden="true">
+                            <!-- モーダルの内容 -->
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="topicModalLabel">トピックを作成</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- トピック追加用入力フォーム -->
+                                        <form id="topicForm" action="{{ url_for('crud.create_topic', class_id=class_data.id) }}" method="POST">
+                                            <!-- フォームの内容 -->
+                                            {{ form_make_topic.csrf_token }}
+                                            <div class="form-group">
+                                                {{ form_make_topic.title(id="title", class="form-control", placeholder="タイトル") }}
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+                                        <button type="submit" form="topicForm" class="btn btn-primary">作成</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                                    
+                        <!-- ナビゲーションバーの下に配置するコンテンツ -->
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <!-- トピックカードのループ開始 -->
+                                {% for topic_item in topic %}
+                                <div class="card" style="margin-bottom: 30px;">
+                                    <div class="card-body">
+                                        <h3 class="card-title border-bottom-primary" style="padding: 10px;">{{ topic_item.title }}</h3>
+                                        <!-- トピックに対応する課題のループ開始 -->
+                                        {% for assignment in assignments_by_topic[topic_item.id] %}
+                                            <div class="card detail-card" data-toggle="collapse" data-target="#collapseContent{{ assignment.id }}" aria-expanded="false" aria-controls="collapseContent{{ assignment.id }}">
+                                                <div class="card-body">
+                                                    <h6 class="card-subtitle mb-2 text-muted" style="padding: 5px;">{{ assignment.title }}</h6>
+                                                </div>
+                                            </div>
+                                            <!-- 隠されたコンテンツ -->
+                                            <div class="collapse" id="collapseContent{{ assignment.id }}" >
+                                                <div class="card card-body border-top-0">
+                                                    <p>投稿日: {{ assignment.created_at }}</p>
+                                                    <p>{{ assignment.description }}</p>
+                                                    <!-- 人数表示カード -->
+                                                    <div class="row justify-content-end">
+                                                        <div>
+                                                            <a href="#" onclick="handleResponseStatusClick({{ class_data.id }}, {{ assignment.id }})" class="btn btn-success back-button">回答状況</a>
+                                                        </div>
+                                                        <!-- 提出済みの生徒数カード -->
+                                                        <div class="col-auto">
+                                                            <div class="card border-0">
+                                                                <div class="card-body" id="collapseContent">
+                                                                    <h2 class="card-title" id="collapseContent">{{ submission_count_dict.get(assignment.id, 0) }}</h2>
+                                                                    <p class="card-text" id="collapseContent">提出済</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- 未提出の生徒数カード -->
+                                                        <div class="col-auto">
+                                                            <div class="card border-0" id="collapseContent">
+                                                                <div class="card-body" id="collapseContent">
+                                                                    <h2 class="card-title" id="collapseContent">{{ class_member_count - submission_count_dict.get(assignment.id, 0) }}</h2>
+                                                                    <p class="card-text" id="collapseContent">未提出</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            {% if assignment.attachment %}
+                                                            <!-- ファイルへのリンク -->
+                                                            <a href="{{ url_for('static', filename=assignment.attachment) }}" target="_blank" style="color: inherit; text-decoration: none;">
+                                                                <div class="card">
+                                                                    <div class="row no-gutters">
+                                                                        <!-- 左側の画像 -->
+                                                                        <div class="col-md-6">
+                                                                            <!-- ファイルタイプに応じた画像を表示 -->
+                                                                            {% if assignment.attachment.endswith('.pdf') %}
+                                                                                <!-- PDFファイルのプレビュー（最初のページを表示） -->
+                                                                                <embed src="{{ url_for('static', filename=assignment.attachment) }}" class="card-img" type="application/pdf" width="100%" height="100%">
+                                                                            {% elif assignment.attachment.endswith(('.png', '.jpg', '.jpeg')) %}
+                                                                                <!-- 画像ファイルの場合、その画像を表示 -->
+                                                                                <img src="{{ url_for('static', filename=assignment.attachment) }}" class="card-img" alt="Image">
+                                                                            {% else %}
+                                                                                <!-- その他のファイルタイプの場合、一般的なファイルアイコンを表示 -->
+                                                                                <img src="{{ url_for('static', filename='image/file-icon.png') }}" class="card-img" alt="File">
+                                                                            {% endif %}
+                                                                        </div>
+                                                                        <!-- 右側のタイトルとファイル名 -->
+                                                                        <div class="col-md-6">
+                                                                            <div class="card-body">
+                                                                                <p>{{ assignment.title }}</p>
+                                                                                <p>{{ assignment.original_filename }}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </a>
+                                                            {% else %}
+                                                                <!-- ファイルがない場合の代替テキストやHTML要素 -->
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            {% include 'footer.html' %}
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    {% include 'scroll-to-top.html' %}
+
+    <!-- Logout Modal-->
+    {% include 'logout-modal.html' %}
+
+    <!-- Bootstrap core JavaScript-->
+    <script>
+        $('#topicModal').on('click', function (e) {
+            e.stopPropagation();
+        });
+    </script>
+    <script>
+        function handleResponseStatusClick(classId, assignmentId) {
+            // Jinjaテンプレートからの変数展開を修正
+            const isStudent = {{ 'true' if current_user.is_student else 'false' }};
+            const url = isStudent
+                ? `/student/answer_page?class_id=${classId}&assignment_id=${assignmentId}`
+                : `/teacher/response_status?class_id=${classId}&assignment_id=${assignmentId}`;
+            window.location.href = url;
+        }
+        </script>        
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="{{ url_for('static', filename='js/jquery.easing.min.js') }}"></script>
+
+
+    <!-- Custom scripts for all pages-->
+    <script src="{{ url_for('static', filename='js/sb-admin-2.min.js') }}"></script>
+
+</body>
+
+</html>

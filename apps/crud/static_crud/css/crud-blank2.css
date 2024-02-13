@@ -1,0 +1,85 @@
+
+.container-fluid {
+    padding-left: 100px;
+    padding-right: 100px;
+}
+.container-fluid > div.mb-2 {
+    text-align: left; /* ボタンを左寄せにする */
+}
+.btn-primary {
+    background-color: blue; /* ボタンの背景色 */
+    border-radius: 20px; /* 角の丸み */
+    color: white; /* テキストの色 */
+    font-weight: bold; /* テキストを太字に */
+}
+
+
+
+
+.detail-card {
+    border: none; /* 枠線を削除 */
+    box-shadow: none; /* 影を削除 */
+}
+.detail-card .card-body {
+    border-top: none; /* 上部の枠線を削除 */
+    background-color: #f8f9fa; /* グレーの背景色 */
+}
+.card-link {
+    text-decoration: none; /* リンクの下線を削除 */
+    color: inherit; /* テキストの色を継承 */
+}
+
+.card-link:hover {
+    text-decoration: none; /* ホバー時の下線を削除 */
+}
+
+/* カードのホバー時のスタイル */
+.detail-card:hover {
+    background-color: #f0f0f0; /* ホバー時の背景色を変更 */
+    cursor: pointer; /* カーソルをリンクポインタに変更 */
+}
+/* トリガーカードの枠線を調整 */
+.card {
+    border: 1px solid rgba(0,0,0,.125); /* Bootstrapのデフォルトの枠線 */
+    border-radius: 0.25rem; /* Bootstrapのデフォルトの角丸 */
+}
+
+/* 詳細カードの上部の枠線を削除して、トリガーカードと一体に見せる */
+.card-body.border-top-0 {
+    border-top: none; /* 上部の枠線を削除 */
+}
+.card-header {
+    cursor: pointer; /* カーソルをリンクポインタに変更 */
+}
+.card-body.border-top-0 {
+    border-top: none; /* 上部の枠線を削除 */
+}
+.detail-card .card-img {
+    width: 100%; /* 画像の幅をカラムの幅に合わせる */
+    height: auto; /* 画像の高さを自動調整 */
+}
+#collapseContent .card-body {
+    padding: 1rem; /* 内部の余白を適切に設定 */
+}
+#collapseContent .card-title {
+    font-size: 2.5rem; /* タイトル（数字）のフォントサイズを大きく設定 */
+    font-weight: bold; /* フォントを太く設定 */
+}
+
+#collapseContent .card-text {
+    font-size: 1rem; /* テキストのフォントサイズを設定 */
+}
+.card-img {
+    width: 100%; /* 画像の幅をカラムの幅に合わせる */
+    height: auto; /* 画像の高さを自動調整 */
+}
+.card-body {
+    padding: 1rem; /* 内部の余白を適切に設定 */
+}
+
+
+
+#homeLink {
+    color: blue; /* ホームリンクの文字色を青色に設定 */
+    border-bottom: 2px solid blue; /* 下線を青色に設定 */
+}

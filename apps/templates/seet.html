@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>座席表アプリ</title>
+    <link rel="icon" type="image/png" href="static/image/buturiicon.png">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style1.css') }}">
+    <!-- Bootstrap CSSの追加 -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">{{class_data.class_name}}座席表作成</a>
+        </div>
+    </nav>
+    <!-- ナビゲーションバーの下に配置 -->
+        <div class="row mt-3">
+            <div class="col-md-1.5" style="margin-left: 40px; margin-right: 20px;">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">行数</span>
+                    </div>
+                    <input type="number" id="seatRows" class="form-control" value="7" min="1" max="10">
+                </div>
+            </div>
+            <div class="col-md-1.5"style="margin-right: 20px;">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">列数</span>
+                    </div>
+                    <input type="number" id="seatColumns" class="form-control" value="7" min="1" max="10">
+                </div>
+            </div>
+            <div class="col-md-1.5">
+                <button class="btn btn-primary" onclick="updateSeatLayout()">配置を変更</button>
+            </div>
+            <div class="col-md-4">
+                <input type="text" id="assignmentTitle" class="form-control" placeholder="タイトル">
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-success" onclick="saveSeatAssignments()">座席を保存</button>
+            </div>
+            
+        </div>
+    
+    
+
+    <div class="container-fluid mt-3">
+        <div class="row">
+            <!-- サイドバー -->
+            <div class="col-md-2">
+                <div class="student-cards">
+                    <!-- 生徒のカードを生成するJavaScriptコードによってここに追加されます -->
+                </div>
+            </div>
+            <!-- メインコンテンツ -->
+            <div class="col-md-10">
+                <div class="d-flex justify-content-center mb-3">
+                    <div class="blackboard">
+                        黒板
+                    </div>
+                </div>
+                <div class="seats" id="make">
+                    <!-- 座席の内容（ドロップエリアとして使用） -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const classId = {{ class_id }};  // サーバーサイドから提供されるclass_idを使用
+        let studentsData = []; // グローバル変数として生徒データを格納
+    
+        // ページ読み込み時に実行される関数
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSeats(7, 7); // 7行7列の座席を初期化
+            fetchAndInitializeStudents(classId); // 生徒データの取得と生徒カードの初期化
+        });
+    
+        // 座席の初期化（行数と列数を引数として受け取る）
+        function initializeSeats(rows, columns) {
+            const container = document.querySelector('.seats');
+            container.innerHTML = '';
+            let seatNumber = 1;
+            for (let i = 0; i < rows; i++) {
+                const rowDiv = document.createElement('div');
+                rowDiv.classList.add('seat-row');
+                for (let j = 0; j < columns; j++) {
+                    const seatDiv = document.createElement('div');
+                    seatDiv.classList.add('seat');
+                    seatDiv.setAttribute('data-seat', seatNumber);
+                    
+                    // 生徒名とキャンセルボタンの要素を追加
+                    const seatNumberSpan = document.createElement('span');
+                    seatNumberSpan.classList.add('seat-number');
+                    seatNumberSpan.textContent = seatNumber;
+                    seatDiv.appendChild(seatNumberSpan);
+
+                    const cancelBtn = document.createElement('button');
+                    cancelBtn.classList.add('cancel-seat', 'd-none');
+                    cancelBtn.textContent = '×';
+                    seatDiv.appendChild(cancelBtn);
+
+                    // イベントリスナーを追加
+                    seatDiv.addEventListener('drop', handleDrop);
+                    seatDiv.addEventListener('dragover', handleDragOver);
+
+                    rowDiv.appendChild(seatDiv);
+                    seatNumber++;
+                }
+                container.appendChild(rowDiv);
+            }
+        }
+
+    
+        // 座席配置を更新する関数
+        function updateSeatLayout() {
+            const rows = parseInt(document.getElementById('seatRows').value, 10);
+            const columns = parseInt(document.getElementById('seatColumns').value, 10);
+            initializeSeats(rows, columns); // 新しい行数と列数で座席を初期化
+        }
+    
+        // 生徒データの取得と初期化
+        function fetchAndInitializeStudents(classId) {
+            fetch(`/class/${classId}/students`)
+                .then(response => response.json())
+                .then(data => {
+                    studentsData = data.students; // 生徒データをグローバル変数に格納
+                    initializeStudentCards(studentsData); // 生徒カードを初期化
+                })
+                .catch(error => {
+                    console.error('Error fetching students:', error);
+                });
+        }
+
+        // 生徒カードの初期化
+        function initializeStudentCards(students) {
+            const container = document.querySelector('.student-cards');
+            container.innerHTML = ''; // 既存のカードをクリア
+            students.forEach(student => {
+                const studentCard = document.createElement('div');
+                studentCard.classList.add('student-card', 'bg-primary', 'text-white');
+                studentCard.textContent = student.name;
+                studentCard.setAttribute('draggable', true);
+                studentCard.setAttribute('data-student-id', student.id);
+                studentCard.addEventListener('dragstart', handleDragStart);
+                container.appendChild(studentCard);
+            });
+        }
+        // ドラッグ開始時のイベントハンドラ
+        function handleDragStart(event) {
+            event.dataTransfer.setData('text/plain', event.target.dataset.studentId);
+        }
+
+        // ドロップ時のイベント
+        function handleDrop(event) {
+            event.preventDefault();
+            const studentId = event.dataTransfer.getData('text/plain');
+            const student = studentsData.find(s => s.id == studentId);
+            if (student) {
+                const seatDiv = event.target.closest('.seat');
+                if (seatDiv && student) {
+                    seatDiv.setAttribute('data-student-id', student.id); // 生徒のIDを座席に割り当てる
+                    // ... その他の処理 ...
+                }
+                if (!seatDiv) return; // 座席以外にドロップされた場合は何もしない
+
+                // 座席に生徒名を設定し、キャンセルボタンを表示
+                seatDiv.querySelector('.seat-number').textContent = student.name;
+                seatDiv.classList.add('bg-primary', 'text-white');
+                const cancelBtn = seatDiv.querySelector('.cancel-seat');
+                cancelBtn.classList.remove('d-none');
+                cancelBtn.dataset.studentId = studentId;
+
+                // 生徒カードを非表示にする
+                hideStudentCard(studentId);
+            }
+        }
+
+        // 座席の割り当てを解除する関数
+        function clearSeat(seatElement) {
+            const studentId = seatElement.querySelector('.cancel-seat').dataset.studentId;
+            seatElement.querySelector('.seat-number').textContent = seatElement.dataset.seat;
+            seatElement.classList.remove('bg-primary', 'text-white');
+            seatElement.querySelector('.cancel-seat').classList.add('d-none');
+
+            // 生徒カードを再表示する
+            showStudentCard(studentId);
+        }
+        // 生徒カードを非表示にする関数
+        function hideStudentCard(studentId) {
+            const studentCard = document.querySelector(`.student-card[data-student-id="${studentId}"]`);
+            if (studentCard) studentCard.classList.add('d-none');
+        }
+        // 生徒カードを再表示する関数
+        function showStudentCard(studentId) {
+            const studentCard = document.querySelector(`.student-card[data-student-id="${studentId}"]`);
+            if (studentCard) studentCard.classList.remove('d-none');
+        }
+
+        // ドラッグオーバー時のイベント
+        function handleDragOver(event) {
+            event.preventDefault();
+        }
+        function clearSeats() {
+            const container = document.querySelector('.seats');
+            container.innerHTML = '';
+        }
+        function saveSeatAssignments() {
+        const title = document.getElementById('assignmentTitle').value;
+        if (!title) {
+            alert("タイトルを入力してください。");
+            return;
+        }
+
+        const rows = parseInt(document.getElementById('seatRows').value, 10);
+        const columns = parseInt(document.getElementById('seatColumns').value, 10);
+
+        let layout = []; // 座席配置を保存する配列
+            for (let i = 0; i < rows; i++) {
+                let row = []; // 各行の座席情報を保存する配列
+                for (let j = 0; j < columns; j++) {
+                    let seatNum = i * columns + j + 1;
+                    let seatDiv = document.querySelector(`[data-seat="${seatNum}"]`);
+                    let studentId = seatDiv.getAttribute('data-student-id');
+                    row.push(studentId ? studentId : null);
+                }
+                layout.push(row);
+            }
+
+        let seatAssignments = {
+            classId: classId,
+            title: title,
+            layout: layout // layoutを送信データに含める
+        };
+
+        fetch('/save-seat-assignment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(seatAssignments)
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert("座席割り当て「" + title + "」を保存しました。");
+                if (data.redirectUrl) {
+                    window.location.href = data.redirectUrl;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("エラーが発生しました。");
+            });
+        }
+    </script>
+    
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="ja">
+

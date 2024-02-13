@@ -1,53 +1,105 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>座席表アプリ</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style1.css') }}">
+    <!-- Bootstrap CSSの追加 -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
-
 <body>
-    <div class="menu-bar">
-        <ul>
-            <li><a href="#" onclick="switchMenuBarMode('studentDisplay')">生徒画面表示</a></li>
-            <li><a href="#" onclick="switchMenuBarMode('classificationList')">記述一覧表示</a></li>
-        </ul>
-    </div>    
-    <div class="left-container">
-        <div class="color-classification"></div>
-    </div>
-    <div class="center-container">
-        <div class="blackboard">
-            黒板
+    <!-- ナビゲーションバー -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">1年D組</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="switchMenuBarMode('studentInfo')">回答表示</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="switchMenuBarMode('studentDisplay')">アナリティクス</a></li>
+                </ul>
+            </div>
         </div>
-    </div>    
-    <div class="seats"></div>
-    <div style="display: flex; margin-top: 30px; text-align: left;">
-        <div class="info-box" style="border: 1px solid #ccc; padding: 10px; margin-right: 10px;">
-            <span class="info-box-label">選択肢</span>
-            <pre><span>{{ answer_options | safe }}</span></pre>
-        </div>   
-        <!-- <div class="info-box" style="border: 1px solid #ccc; padding: 10px; margin-right: 10px;">
-            <span class="info-box-label">正答</span>
-            <pre><span>{{ correct_answer_option | safe }}</span></pre>
-        </div> -->
-        <div class="info-box" style="border: 1px solid #ccc; padding: 10px; margin-right: 10px;">
-            <span class="info-box-label">選択肢ごとの誤概念</span>
-            <pre><span>{{ misconception | safe }}</span></pre>
-        </div>                    
+    </nav>
+
+    <div class="container-fluid mt-3">
+
+        <div class="row">
+            <!-- サイドバー -->
+            <div class="col-md-2">
+                <div class="color-classification">
+                    <!-- 色分類の内容 -->
+                </div>
+                <div>
+                    <h3>post</h3>
+                    <canvas id="pieChart" width="400" height="400" style="padding: 20px;"></canvas>
+                    <h3>pre</h3>
+                    <canvas id="barChart" width="400" height="400" style="padding: 20px;"></canvas>
+                </div>
+                <div class="d-flex justify-content-center mb-3">
+                    <div class="miniblackboard">
+                        黒板
+                    </div>
+                </div>
+                <div class="small-seats-container">
+                    <!-- ここに小さい座席表が表示される -->
+                </div>
+            </div>
+            
+            <!-- メインコンテンツ -->
+            <div class="col-md-10">
+                <div class="d-flex justify-content-center mb-3">
+                    <div class="blackboard">
+                        黒板
+                    </div>
+                </div>
+                <div class="seats">
+                    <!-- 座席の内容 -->
+                </div>
+                <div class="info-area d-flex mt-3" style = "margin-left: 200px";>
+                    <div class="card me-3">
+                        <div class="card-body">
+                            <h5 class="card-title">選択肢</h5>
+                            <p class="card-text"><pre><span>{{ first_option | safe }}</span></pre></p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">選択肢ごとの誤概念</h5>
+                            <p class="card-text"><pre><span>{{ misconception | safe }}</span></pre></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    
+    <!-- 生徒情報モーダル -->
+    <div class="modal fade" id="studentInfoModal" tabindex="-1" aria-labelledby="studentInfoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="studentInfoModalLabel">生徒情報</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- 生徒情報がここに表示されます -->
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // 生徒データの配列
         const studentData = {{ student_datas|tojson|safe }};
         // const studentData = [
-        //     { id: 1, name: "山田太郎", answer: "", classification: "サッカー部", question: '' },
-        //     { id: 2, name: "佐藤花子", answer: "", classification: "バスケ部", question: '' },
-        //     { id: 3, name: "山田太郎", answer: "", classification: "サッカー部" , question: '' },
+        // { id: 1, name: "山田太郎", preAnswer: "A", postAnswer: "B", classification: "サッカー部", question: '' },
+        // { id: 2, name: "佐藤花子", preAnswer: "C", postAnswer: "A", classification: "バスケ部", question: '' },
+        // ];
+
         const totalSeats = Array.from({ length: 44 }, (_, i) => i + 1);
         const seats = {};
         for (const seat of totalSeats) {
@@ -58,27 +110,93 @@
         const classificationColors = {};
 
         // 座席を初期化する関数
-        function initializeSeats() {
+        function initializeSeats(numRows, numColumns) {
             const container = document.querySelector('.seats');
-            for (const seat in seats) {
-                const div = document.createElement('div');
-                div.classList.add('seat');
-                div.textContent = seats[seat].student ? seats[seat].student.name : seat;
-                div.setAttribute('data-seat', seat);
-                if (seats[seat].student) {
-                    div.style.backgroundColor = getColor(seats[seat].student.classification);
+            container.innerHTML = ''; // 以前の座席をクリア
+
+            let seatNumber = 1;
+            for (let i = 0; i < numRows; i++) {
+                const rowDiv = document.createElement('div');
+                rowDiv.classList.add('seat-row');
+
+                for (let j = 0; j < numColumns; j++) {
+                    const seatDiv = document.createElement('div');
+                    seatDiv.classList.add('seat');
+                    const student = studentData.find(s => s.id === seatNumber);
+
+                    if (student) {
+                        seatDiv.textContent = student.name;
+                        seatDiv.style.backgroundColor = getColor(student.classification);
+                    } else {
+                        seatDiv.textContent = seatNumber;
+                    }
+
+                    seatDiv.setAttribute('data-seat', seatNumber);
+
+                    // クリックイベントリスナーの追加
+                    seatDiv.addEventListener('click', function(event) {
+                        // data-seat 属性から座席番号を取得
+                        const clickedSeatNumber = event.currentTarget.getAttribute('data-seat');
+                        showStudentInfo(clickedSeatNumber);
+                    });
+
+                    rowDiv.appendChild(seatDiv);
+                    seatNumber++;
                 }
-                div.addEventListener('click', function(event) {
-                    const seat = event.currentTarget.getAttribute('data-seat');
-                    showStudentInfo(event, seat);
-                });
-                container.appendChild(div);
+
+                container.appendChild(rowDiv);
             }
         }
 
+        function initializeSmallSeats(containerSelector, data) {
+            const container = document.querySelector(containerSelector);
+            container.innerHTML = ''; // 既存の座席をクリア
+
+            // 座席の行と列の数を定義
+            const numRows = 6; // 行の数
+            const numColumns = 7; // 列の数
+
+            let seatNumber = 1;
+            for (let i = 0; i < numRows; i++) {
+                const rowDiv = document.createElement('div');
+                rowDiv.classList.add('seat-row');
+
+                for (let j = 0; j < numColumns; j++) {
+                    const seatDiv = document.createElement('div');
+                    seatDiv.classList.add('seat', 'small-seat');
+                    const student = data.find(s => s.id === seatNumber);
+
+                    if (student) {
+                        seatDiv.style.backgroundColor = getColor(student.classification);
+                    } else {
+                        seatDiv.textContent = seatNumber; // 座席番号を表示
+                    }
+
+                    rowDiv.appendChild(seatDiv);
+                    seatNumber++;
+                }
+
+                container.appendChild(rowDiv);
+            }
+        }
+
+
+        function switchSeats() {
+            const mainSeatsContainer = document.querySelector('.main-seats'); // メインの座席表コンテナ
+            const smallSeatsContainer = document.querySelector('.small-seats-container'); // 小さい座席表コンテナ
+
+            // 内容を交換
+            [mainSeatsContainer.innerHTML, smallSeatsContainer.innerHTML] = [smallSeatsContainer.innerHTML, mainSeatsContainer.innerHTML];
+        }
+
+        // サイドバーの小さな座席表にイベントリスナーを追加
+        document.querySelector('.small-seats-container').addEventListener('click', switchSeats);
+
+
+
+
         // メニューバーのモード
-        let menuBarMode = 'studentDisplay';  // デフォルトは「生徒画面表示」
-        const infoDisplay = document.querySelector('.infoDisplay');
+        let menuBarMode = 'studentInfo';  // デフォルトは「生徒画面表示」
         const tooltip = document.createElement('div');
         tooltip.classList.add('tooltip');
         document.body.appendChild(tooltip);
@@ -86,62 +204,30 @@
         // メニューバーのモードを切り替える関数
         function switchMenuBarMode(mode) {
             menuBarMode = mode;
-            if (menuBarMode === 'classificationList') {
-                infoDisplay.style.display = 'block';
-            } else {
-                infoDisplay.style.display = 'none';
-            }
         }
 
         // 生徒の情報を表示する関数
-        function showStudentInfo(event, seatKey) {
-            const seatData = seats[seatKey];
-
-            if (menuBarMode === 'studentDisplay') {
-                if (seatData.student) {
-                    tooltip.innerHTML = `
-                        <div><span class="info-box-label">生徒名</span> ${seatData.student.name}</div>
-                        <div><span class="info-box-label">出席番号</span> ${seatData.student.id}</div>
-                        <div><span class="info-box-label">分類結果</span> ${seatData.student.classification}</div>
-                        <div><span class="info-box-label">記述内容</span> ${seatData.student.answer}</div>
-                        <div><span class="info-box-label">質問</span> ${seatData.student.question}</div>
+        // 生徒の情報を表示する関数
+        function showStudentInfo(seatNumber) {
+            // 座席番号に基づいて生徒を検索
+            const student = studentData.find(s => s.id === parseInt(seatNumber));
+            if (menuBarMode === 'studentInfo') {
+                if (student) {
+                    const modalBody = document.querySelector('#studentInfoModal .modal-body');
+                    modalBody.innerHTML = `
+                        <p><strong>生徒名:</strong> ${student.name}</p>
+                        <p><strong>出席番号:</strong> ${student.id}</p>
+                        <p><strong>分類結果:</strong> ${student.classification}</p>
+                        <p><strong>記述内容:</strong> ${student.answer}</p>
+                        <p><strong>質問:</strong> ${student.question}</p>
                     `;
-
-                } else {
-                    tooltip.innerHTML = 'この座席には生徒の情報がありません。';
+                    $('#studentInfoModal').modal('show');
                 }
-            
-                const isRightOfCenter = event.clientX > window.innerWidth / 2;
-            
-                if (isRightOfCenter) {
-                    tooltip.classList.remove('right');
-                    tooltip.classList.add('left');
-                    tooltip.style.left = event.clientX - tooltip.offsetWidth - 20 + 'px';
-                } else {
-                    tooltip.classList.remove('left');
-                    tooltip.classList.add('right');
-                    tooltip.style.left = event.clientX + 20 + 'px';
-                }
-                tooltip.style.top = event.clientY - tooltip.offsetHeight / 2 + 'px';
-                tooltip.style.display = 'block';
-            } else if (menuBarMode === 'classificationList') {
-                // この部分を追加: 生徒に関するページに遷移
-                if (seatData.student) {
-                    window.location.href = `/student/${seatData.student.id}`;
+            } else if (menuBarMode === 'studentDisplay') {
+                if (student) {
+                    window.location.href = `/student/${student.id}`;
                 }
             }
-        }
-
-        // 他の場所をクリックした場合、ツールチップを非表示にする
-        document.addEventListener('click', function(event) {
-            if (event.target.className !== 'seat') {
-                hideTooltip();
-            }
-        });
-
-        // ツールチップを非表示にする関数
-        function hideTooltip() {
-            tooltip.style.display = 'none';
         }
 
         // 既に選択された色を保存する配列
@@ -170,6 +256,12 @@
             return classificationColors[classification];
         }
 
+        // 色情報をローカルストレージに保存する関数
+        function saveColorsToLocalStorage() {
+            localStorage.setItem('classificationColors', JSON.stringify(classificationColors));
+        }
+
+
 
         // 色の説明を生成する関数
         function generateColorLegend() {
@@ -192,9 +284,72 @@
             }
         }
 
-        // 座席と色の説明を初期化
-        initializeSeats();
-        generateColorLegend();
+        function drawCharts() {
+            const classifications = studentData.map(s => s.classification);
+            const classificationCounts = classifications.reduce((acc, c) => {
+                acc[c] = (acc[c] || 0) + 1;
+                return acc;
+            }, {});
+
+            const labels = Object.keys(classificationCounts);
+            const data = Object.values(classificationCounts);
+
+            // 円グラフ
+            new Chart(document.getElementById('pieChart'), {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '分類',
+                        data: data,
+                        backgroundColor: labels.map(label => classificationColors[label] || '#ccc'),
+                        borderWidth: 1
+                    }]
+                }
+            });
+
+            // 棒グラフ
+            new Chart(document.getElementById('barChart'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '分類',
+                        data: data,
+                        backgroundColor: labels.map(label => classificationColors[label] || '#ccc'),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+
+        window.onload = function() {
+            initializeSeats(6, 8);
+            initializeSmallSeats('.small-seats-container', studentData); // 小さい座席表を初期化
+            generateColorLegend();
+            // グラフの描画を呼び出す
+            drawCharts();
+        };
+
     </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    
+
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="ja">
+

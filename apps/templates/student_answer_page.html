@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ current_user.name }}</title>
+    <link rel="icon" type="image/png" href="static/image/buturiicon.png">
+    <!-- Bootstrap CSSの追加 -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style1.css') }}">
+</head>
+
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="margin-bottom: 30px;">
+        <div class="container-fluid">
+            <div class="row" >
+                <h4 class="navbar-brand" href="#">
+                    <p>{{ class_info.class_name }} - {{ assignment.title }}      各生徒の画面:{{ current_user.name }}</p>
+                </h4>
+            </div>
+        </div>
+    </nav>
+    <style>
+        .chat-progress-container {
+            margin-left: 20px;
+            margin-right: 20px;
+            padding: 5px;
+            width: 100%; /* プログレスバーのコンテナの幅 */
+            background-color: #eee; /* 背景色 */
+            border-radius: 5px; /* 角の丸み */
+            margin: 10px 0; /* 余白 */
+        }
+
+        .chat-progress-bar {
+            padding: 3px;
+            height: 20px; /* プログレスバーの高さ */
+            background-color: #007bff; /* バーの色 */
+            width: 0%; /* 初期幅 */
+            border-radius: 5px; /* 角の丸み */
+            transition: width 0.3s ease-in-out; /* 幅の変更時のアニメーション */
+        }
+
+    </style>
+
+    <div class="container-fluid mt-3">
+        <div class="row">
+            <!-- サイドバー (チャット機能) -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        一緒に回答を作成しよう
+                    </div>
+                    <div class="chat-progress-container">
+                        <div id="chat-progress-bar" class="chat-progress-bar"></div>
+                    </div>
+                    <p id="remaining-chats">残り回数: <span id="remaining-count"></span></p>
+                    <!-- チャットメッセージ表示エリア -->
+                    <div class="chat-messages" style="min-height: 500px; ">
+                        <!-- メッセージがここに追加されます -->
+                    </div>
+
+                    <div class="card-footer chat-input">
+                        <div class="input-group">
+                            <textarea class="form-control" placeholder="回答を記入してください." rows="1"></textarea>
+                            <button class="btn btn-primary send-btn" onclick="sendMessage()">▷</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <style>
+                .card-footer.chat-input {
+                    padding: 0; /* 内側の余白を削除 */
+                }
+
+                .input-group {
+                    display: flex;
+                    border: 1px solid #ccc; /* 枠線を追加 */
+                    border-radius: 5px; /* 角を丸くする */
+                }
+
+                .form-control {
+                    border: none; /* テキストエリアの枠線を削除 */
+                    border-radius: 0; /* 角の丸みを取り除く */
+                    flex-grow: 1; /* テキストエリアを広げる */
+                }
+
+                .send-btn {
+                    border-radius: 0 5px 5px 0; /* 右側の角を丸くする */
+                    margin-left: -1px; /* 枠線の重複を防ぐ */
+                }
+            </style>
+
+            <!-- メインコンテンツ -->
+            <div class="col-md-8">
+                <div class="row">
+                    <img src="{{ url_for('static', filename='image/スクリーンショット 2023-12-25 11.14.13.png') }}" alt="説明テキスト" width="800" height="300">
+                    <div class="seats2"></div>
+                </div>
+                    <div style="margin-top: 20px;">
+                    <h5>※参考資料</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="row no-gutters">
+                                    <!-- 左側の画像 -->
+                                    <div class="col-md-6">
+                                        <img src="{{ url_for('static', filename='image/nage.png') }}" class="card-img" alt="...">
+                                    </div>
+                                    <!-- 右側のタイトル -->
+                                    <div class="col-md-6">
+                                        <div class="card-body">
+                                            <p>実験動画</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="row no-gutters">
+                                    <!-- 左側の画像 -->
+                                    <div class="col-md-6">
+                                        <img src="{{ url_for('static', filename='image/otamesi.png') }}" class="card-img" alt="...">
+                                    </div>
+                                    <!-- 右側のタイトル -->
+                                    <div class="col-md-6">
+                                        <div class="card-body">
+                                            <p>自由落下運動</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 生徒用の課題提出フォーム -->
+                <div class="card student-info-card" style="margin-top: 30px;">
+                    <textarea id="assignment-answer" class="form-control" placeholder="回答を記入してください" rows="2"></textarea>
+                    <button class="btn btn-light mt-2" onclick="submitAssignment()">提出</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var chatCount = 0; // チャット回数を追跡する変数
+        var maxChatCount = 5; // プログレスバーが満たされる最大チャット回数
+
+        // メッセージを送信するための関数
+        function sendMessage() {
+            const textarea = document.querySelector(".chat-input textarea");
+            const messagesContainer = document.querySelector(".chat-messages");
+
+            // メッセージが空でない場合のみ送信
+            if (textarea.value.trim() !== "") {
+                const messageElement = document.createElement("div");
+                messageElement.classList.add("message");
+                messageElement.classList.add("sent");
+                messageElement.textContent = textarea.value;
+
+                messagesContainer.appendChild(messageElement);
+
+                // ユーザーのメッセージを送信
+                fetch("/send_message", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ message: textarea.value })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // OpenAIからの返信を表示領域に追加
+                        const responseElement = document.createElement("div");
+                        responseElement.classList.add("message");
+                        responseElement.classList.add("received");
+                        responseElement.textContent = data.response_message;
+
+                        messagesContainer.appendChild(responseElement);
+                        // 最新のメッセージが表示されるようにスクロール
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    } else {
+                        console.error("Failed to send message:", data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+
+
+                // テキストエリアをクリア
+                textarea.value = "";
+                // 最新のメッセージが表示されるようにスクロール
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                // チャット回数を増やす
+                chatCount++;
+                updateProgressBar();
+                updateRemainingChats();
+            }
+        }
+
+        function updateProgressBar() {
+            var progressBar = document.getElementById('chat-progress-bar');
+            var progressPercentage = Math.min(chatCount / maxChatCount * 100, 100);
+            progressBar.style.width = progressPercentage + '%';
+        }
+
+        function updateRemainingChats() {
+            var remainingChats = document.getElementById('remaining-count');
+            var remaining = maxChatCount - chatCount;
+            remainingChats.textContent = remaining;
+        }
+
+        // 送信ボタンにイベントリスナーを追加
+        const sendButton = document.querySelector(".chat-input button");
+        sendButton.addEventListener("click", sendMessage);
+
+        // Enterキーを押すとメッセージを送信
+        document.querySelector(".chat-input textarea").addEventListener("keypress", function(event) {
+            if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // 課題を提出するための関数
+        function submitAssignment() {
+            const answer = document.getElementById('assignment-answer').value;
+            if (answer.trim() === '') {
+                alert('回答を入力してください。');
+                return;
+            }
+
+            const payload = {
+                studentId: {{ current_user.id }},
+                assignmentId: {{ assignment.id }},
+                answer: answer,
+                seatAssignmentId: {{ assignment.seat_assignment_id }},
+            };
+
+            fetch('/submit_assignment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('回答が提出されました。');
+                    document.getElementById('assignment-answer').value = ''; // テキストエリアをクリア
+                } else {
+                    alert('回答の提出に失敗しました。');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('回答の提出中にエラーが発生しました。');
+            });
+        }
+
+
+
+        initializeSeats();
+        generateColorLegend();
+        updateRemainingChats();
+
+
+
+    </script>
+
+</body>
+</html>

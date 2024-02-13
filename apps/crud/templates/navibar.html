@@ -1,0 +1,17 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link"  href="{{url_for('crud.class_detail', class_id=class_data.id)}}">ストリーム</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="homeLink" href="{{url_for('crud.classcontents', class_id=class_data.id)}}">授業</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('crud.classanalytics', class_id=class_data.id)}}">アナリティクス</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

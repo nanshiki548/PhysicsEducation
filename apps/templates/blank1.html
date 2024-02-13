@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Blank1</title>
+
+    <!-- Custom fonts for this template-->
+    <link rel="icon" type="image/png" href="static/image/buturiicon.png">
+    <link href="{{url_for('static', filename='css/all.min.css')}}" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="{{url_for('static', filename='css/sb-admin-2.min.css')}}" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{url_for('index2')}}">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-laugh-wink"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">可視化アプリ</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" href="{{url_for('index2')}}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>ホーム</a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                インターフェイス
+            </div>
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>設定</span>
+                </a>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">カスタムコンポーネント</h6>
+                        <a class="collapse-item" href="{{url_for('buttons')}}">ボタン</a>
+                        <a class="collapse-item" href="{{url_for('cards')}}">カード</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Utilities Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+                    aria-expanded="true" aria-controls="collapseUtilities">
+                    <i class="fas fa-fw fa-wrench"></i>
+                    <span>ユーティリティ</span>
+                </a>
+                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Custom Utilities:</h6>
+                        <a class="collapse-item" href="{{url_for('utilitiescolor')}}">色</a>
+                        <a class="collapse-item" href="{{url_for('utilitiesborder')}}">線</a>
+                        <a class="collapse-item" href="{{url_for('utilitiesanimation')}}">アニメーション</a>
+                        <a class="collapse-item" href="{{url_for('utilitiesother')}}">その他</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                担当クラス
+            </div>
+
+            <!-- Nav Item - Pages Collapse Menu
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>ページ</span>
+                </a>
+                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">ログイン画面</h6>
+                        <a class="collapse-item" href="{{url_for('login')}}">ログイン</a>
+                        <a class="collapse-item" href="{{url_for('register')}}">新規登録</a>
+                        <a class="collapse-item" href="{{url_for('forgotpassword')}}">パスワードを忘れた</a>
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">その他の画面:</h6>
+                        <a class="collapse-item" href="{{url_for('404')}}">404 Page</a>
+                        <a class="collapse-item" href="{{url_for('blank1')}}">Blank Page</a>
+                    </div>
+                </div>
+            </li> -->
+
+            <!-- Nav Item - Charts -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{url_for('blank1')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>物理基礎1-B</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{url_for('blank1')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>物理基礎1-D</span></a>
+            </li><li class="nav-item">
+                <a class="nav-link" href="{{url_for('blank1')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>物理基礎1-H</span></a>
+            </li>
+
+            <!-- Nav Item - Tables -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{url_for('tables')}}">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>物理2-D</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+            <!-- Sidebar Message
+            <div class="sidebar-card d-none d-lg-flex">
+                <img class="sidebar-card-illustration mb-2" src="static/img/undraw_rocket.svg" alt="...">
+                <p class="text-center mb-2"><strong>プレミアム版</strong> では、プレミアム機能、コンポーネントなどが満載です。</p>
+                <a class="btn btn-success btn-sm" href="https://startbootstrap.com/theme/sb-admin-pro">アップグレード!</a>
+            </div> -->
+
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Topbar Search -->
+                    <h2>物理的概念可視化アプリ</h2>
+                    <form
+                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-light border-0 small" placeholder="検索"
+                                aria-label="Search" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw"></i>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                                aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light border-0 small"
+                                            placeholder="Search for..." aria-label="Search"
+                                            aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Alerts -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw"></i>
+                                <!-- Counter - Alerts -->
+                                <span class="badge badge-danger badge-counter">3+</span>
+                            </a>
+                            <!-- Dropdown - Alerts -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">
+                                    Alerts Center
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-primary">
+                                            <i class="fas fa-file-alt text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 12, 2019</div>
+                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-success">
+                                            <i class="fas fa-donate text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 7, 2019</div>
+                                        $290.29 has been deposited into your account!
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-warning">
+                                            <i class="fas fa-exclamation-triangle text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 2, 2019</div>
+                                        Spending Alert: We've noticed unusually high spending for your account.
+                                    </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Messages -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-envelope fa-fw"></i>
+                                <!-- Counter - Messages -->
+                                <span class="badge badge-danger badge-counter">7</span>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="messagesDropdown">
+                                <h6 class="dropdown-header">
+                                    Message Center
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="static/img/undraw_profile_1.svg"
+                                            alt="...">
+                                        <div class="status-indicator bg-success"></div>
+                                    </div>
+                                    <div class="font-weight-bold">
+                                        <div class="text-truncate">Hi there! I am wondering if you can help me with a
+                                            problem I've been having.</div>
+                                        <div class="small text-gray-500">Emily Fowler · 58m</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="static/img/undraw_profile_2.svg"
+                                            alt="...">
+                                        <div class="status-indicator"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">I have the photos that you ordered last month, how
+                                            would you like them sent to you?</div>
+                                        <div class="small text-gray-500">Jae Chun · 1d</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="static/img/undraw_profile_3.svg"
+                                            alt="...">
+                                        <div class="status-indicator bg-warning"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">Last month's report looks great, I am very happy with
+                                            the progress so far, keep up the good work!</div>
+                                        <div class="small text-gray-500">Morgan Alvarez · 2d</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="https://source.unsplash.com/Mv9hjnEUHR4/60x60"
+                                            alt="...">
+                                        <div class="status-indicator bg-success"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">Am I a good boy? The reason I ask is because someone
+                                            told me that people say this to all dogs, even if they aren't good...</div>
+                                        <div class="small text-gray-500">Chicken the Dog · 2w</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
+                            </div>
+                        </li>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">松田竜弥</span>
+                                <img class="img-profile rounded-circle"
+                                    src="static/img/undraw_profile.svg">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    プロフィール
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    設定
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    活動ログ
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    ログアウト
+                                </a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                </nav>
+                <!-- End of Topbar -->
+                <style>
+                    #homeLink {
+                        color: blue; /* ホームリンクの文字色を青色に設定 */
+                        border-bottom: 2px solid blue; /* 下線を青色に設定 */
+                    }
+                </style>
+                
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                        <div class="container">
+                            <div class="collapse navbar-collapse" id="navbarNav">
+                                <ul class="navbar-nav">
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="homeLink" href="{{url_for('blank1')}}">ストリーム</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{url_for('blank2')}}">授業</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{url_for('blank3')}}">採点</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                    
+                    <style>
+                        .container-fluid {
+                            padding-left: 100px; 
+                            padding-right: 100px; 
+                        }
+                    
+                        .card-img {
+                            height: 250px;
+                            object-fit: cover;
+                        }
+                    
+                        .card-img-overlay {
+                            position: absolute;
+                            bottom: 0;
+                            left: 0;
+                            padding: 10px;
+                            background-color: rgba(0, 0, 0, 0.5); /* 半透明の黒色背景 */
+                            color: white; /* テキストの色を白に変更 */
+                        }
+                    
+                        .card-title, .card-text {
+                            font-weight: bold; /* テキストを太字に */
+                        }
+                    </style>
+
+                    <!-- Page Heading -->
+                    <!-- カード -->
+                    <div class="card text-white">
+                        <img class="card-img" src="static/assets/img/buturi.jpg" alt="背景画像">
+                        <div class="card-img-overlay">
+                            <h1 class="card-title">物理基礎</h1>
+                            <h3 class="card-text">1B</h3>
+                        </div>
+                    </div>
+                    <!-- 左右比2:8で分割されたコンポーネント -->
+                    <div class="row">
+                        <div class="col-md-2">
+                            <!-- 左側のコンテンツ -->
+                            <div class="col-auto" style="margin-top: 20px;">
+                                <div class="card border-0">
+                                    <div class="card-body"id="collapseContent">
+                                        <h2 class="card-title" id="collapseContent" style="font-size: 20px;">syctdm6</h2>
+                                        <p class="card-text"id="collapseContent">クラスコード</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto" style="margin-top: 20px;">
+                                <a href="{{url_for('seet')}}" class="card-link">
+                                    <div class="card border-0">
+                                        <!-- 画像を挿入する部分 -->
+                                        <div class="card-body" id="collapseContent">
+                                            <img src="static/image/seet.png" class="card-img-top" alt="座席表">
+                                            <p class="card-text" id="collapseContent">座席表を作成</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-auto" style="margin-top: 20px;">
+                                    <div class="card border-0">
+                                        <div id="savedSeatAssignmentsMini" class="mt-3">
+                                            <!-- ここに保存された座席表のタイトルが表示されます -->
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                        <!-- モーダルウィンドウ -->
+                        <div class="modal fade" id="seatAssignmentModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="modalTitle">座席表の詳細</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- モーダルウィンドウに表示される座席表 -->
+                                        <div class="d-flex justify-content-center mb-3">
+                                            <div class="blackboard">
+                                                黒板
+                                            </div>
+                                        </div>
+                                        <div id="savedSeatAssignments" class="mt-3"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-10">
+                            <!-- テキスト入力フォームが付いたカード -->
+                            <style>
+                                .input-group {
+                                    padding-right: 0; /* カードの左側の余白をなくす */
+                                }
+                            </style>
+                            <style>
+                                .input-group-text {
+                                    background-color: white; /* 背景色を白に設定 */
+                                    border: 1px solid white; /* 枠線を白に設定 */
+                                }
+                            
+                                .input-group .form-control, .input-group .btn {
+                                    height: calc(2.25rem + 2px); /* 入力フォームとボタンの高さを合わせる */
+                                }
+                            </style>
+                                <div style="padding-right: 0;">
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-white border-white">
+                                                <i class="fas fa-user-circle fa-2x"></i>
+                                            </span>
+                                        </div>
+                                        <textarea class="form-control" id="inputText" placeholder="クラスへの連絡事項を入力" rows="3" oninput="adjustTextAreaHeight(this)"></textarea>
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-primary" onclick="addCard()">送信</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <script>
+                                function displaySavedSeatAssignments() {
+                                    const savedData = localStorage.getItem('seatAssignments');
+                                    if (!savedData) {
+                                        return; // 保存されたデータがなければ何もしない
+                                    }
+
+                                    const assignments = JSON.parse(savedData);
+                                    const miniContainer = document.getElementById('savedSeatAssignmentsMini');
+                                    const modalContainer = document.getElementById('savedSeatAssignments');
+                                    miniContainer.innerHTML = ''; // コンテナをクリア
+                                    modalContainer.innerHTML = ''; // コンテナをクリア
+
+                                    // タイトルをクリック可能にする
+                                    const titleElement = document.createElement('p');
+                                    titleElement.textContent = assignments.title;
+                                    titleElement.setAttribute('data-toggle', 'modal');
+                                    titleElement.setAttribute('data-target', '#seatAssignmentModal');
+                                    titleElement.style.cursor = 'pointer'; // カーソルをポインターに変更
+
+                                    // スタイルを追加
+                                    titleElement.style.textAlign = 'center'; // テキストを中央揃えに
+                                    titleElement.style.margin = '0'; // 余白をなくす
+                                    titleElement.style.padding = '10px 0px '; // 上下にパディングを追加
+                                    titleElement.style.fontWeight = 'bold'; // フォントを太字に
+
+                                    miniContainer.appendChild(titleElement);
+
+                                    // 座席表を行と列に基づいて視覚的に生成
+                                    const seatMap = new Map(assignments.seats.map(s => [s.seat, s.student]));
+                                    const rows = assignments.rows; // 保存された行数
+                                    const columns = assignments.columns; // 保存された列数
+                                    for (let i = 0; i < rows; i++) {
+                                        const rowDiv = document.createElement('div');
+                                        rowDiv.classList.add('seat-row', 'd-flex');
+                                        for (let j = 0; j < columns; j++) {
+                                            const seatNumber = i * columns + j + 1;
+                                            const studentName = seatMap.get(String(seatNumber));
+
+                                            const seatDiv = document.createElement('div');
+                                            seatDiv.classList.add('seat', 'border', 'm-1', 'd-flex', 'justify-content-center', 'align-items-center');
+                                            seatDiv.style.width = '100px'; // 座席の幅
+                                            seatDiv.style.height = '50px'; // 座席の高さ
+
+                                            // 生徒情報がある場合はprimary色を適用
+                                            if (studentName) {
+                                                seatDiv.classList.add('bg-primary', 'text-white');
+                                                seatDiv.textContent = studentName;
+                                            } else {
+                                                seatDiv.classList.add('bg-light');
+                                                seatDiv.textContent = seatNumber;
+                                            }
+                                            rowDiv.appendChild(seatDiv);
+                                        }
+                                        modalContainer.appendChild(rowDiv);
+                                    }
+                                }
+
+                                // ページロード時に実行
+                                window.onload = function() {
+                                    displaySavedSeatAssignments();
+                                };
+
+
+                                let cardId = 0;
+                            
+                                function adjustTextAreaHeight(textarea) {
+                                    textarea.style.height = 'auto';
+                                    textarea.style.height = textarea.scrollHeight + 'px';
+                                }
+                            
+                                function addCard() {
+                                    var inputText = document.getElementById('inputText').value;
+                                    var cardContainer = document.getElementById('cardContainer');
+                                    var userName = "松田竜弥"; // 実際の投稿者名を設定
+                                    var currentDate = new Date().toLocaleDateString("ja-JP"); // 現在の日付を取得
+                            
+                                    // 新しいカードのHTMLを生成
+                                    var cardHtml = `
+                                        <div class="card mt-3">
+                                            <div class="card-header">
+                                                ${userName} - ${currentDate}
+                                            </div>
+                                            <div class="card-body">
+                                                ${inputText.replace(/\n/g, '<br>')}
+                                                <div class="comment-section" id="comments-${cardId}"></div>
+                                                <textarea class="form-control mt-2" id="commentText-${cardId}" placeholder="コメントを追加"></textarea>
+                                                <button type="button" class="btn btn-secondary mt-2" onclick="addComment(${cardId})">コメント</button>
+                                            </div>
+                                        </div>`;
+                            
+                                    // カードをコンテナの最初に追加
+                                    cardContainer.insertAdjacentHTML('afterbegin', cardHtml);
+                            
+                                    // 入力フィールドをクリア
+                                    document.getElementById('inputText').value = '';
+                                    document.getElementById('inputText').style.height = '';
+                            
+                                    cardId++;
+                                }
+                            
+                                function addComment(cardId) {
+                                    var commentInput = document.getElementById(`commentText-${cardId}`);
+                                    var commentContainer = document.getElementById(`comments-${cardId}`);
+                            
+                                    var commentHtml = `
+                                        <div class="mt-2">
+                                            <b>湯地調:</b> ${commentInput.value}
+                                        </div>`;
+                            
+                                    commentContainer.insertAdjacentHTML('beforeend', commentHtml);
+                                    commentInput.value = '';
+                                }
+                            </script>
+                            
+                            
+                            
+                            <!-- 新しいカードを追加するコンテナ -->
+                            <div id="cardContainer"></div>
+                            
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Your Website 2020</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="login.html">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="{{ url_for('static', filename='js/jquery.easing.min.js') }}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="{{ url_for('static', filename='js/sb-admin-2.min.js') }}"></script>
+
+</body>
+
+</html>

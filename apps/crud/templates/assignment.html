@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment</title>
+    <link rel="icon" type="image/png" href="{{ url_for('crud.static', filename='image/buturiicon.png') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css">
+    <link href="{{ url_for('crud.static', filename='css/assignment.css') }}" rel="stylesheet">
+</head>
+
+
+<body>
+
+<div class="container-fluid">
+    <form id="assignmentForm" action="{{ url_for('crud.create_concept_test', class_id=class_data.id) }}" method="post" enctype="multipart/form-data">
+        <!-- メニューバー -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="navbar-brand">
+                <i class="fas fa-clipboard-list fa-lg"></i> 課題
+            </div>
+            <button class="btn btn-outline-primary" type="submit" name="action" value="final_save" id="assignButton" >割り当て</button>
+        </nav>
+    
+        <div class="row">
+            <!-- メインコンテンツ -->
+            <div class="col-md-9 bg-light">
+                <!-- 投稿フォーム -->
+                <div class="card">
+                    <div class="card-body">
+                        <!-- 課題タイトル -->
+                        <div class="form-group" style="margin-top: 10px;">
+                            <input style="padding: 20px;" type="text" name="title" class="form-control" id="title" placeholder="タイトルを入力" value="{{ editing_assignment.title if editing_assignment else '' }}">
+                        </div>
+
+                        <!-- 課題詳細 -->
+                        <div class="form-group" style="margin-top: 20px;">
+                            <textarea style="padding: 20px;" name="description" class="form-control" id="postContent" rows="7" placeholder="課題の詳細を入力">{{ editing_assignment.description if editing_assignment else '' }}</textarea>
+                        </div>
+
+                    
+                        <!-- 最終保存ボタン -->
+                        <!-- <button type="submit" name="action" value="final_save" class="btn btn-success">最終保存</button> -->
+                        
+                        <!-- 添付ファイル -->
+                        <div class="card" id="specificCard">
+                            <p style="margin: 20px;">添付</p>
+                            <div class="card-body text-center">
+                                <!-- ボタンを中央揃えにするためのコンテナ -->
+                                <div class="btn-group" role="group">
+                                    <!-- ファイルアップロードボタン -->
+                                    <label class="btn btn-primary rounded-circle mr-2" for="fileUpload" title="ファイルをアップロード">
+                                        <i class="fas fa-upload"></i>
+                                        <input type="file" name="file" class="custom-file-input" id="fileUpload" accept="image/*,video/*,application/pdf" hidden>
+                                    </label>
+                        
+                                    <!-- リンク追加ボタン -->
+                                    <button class="btn btn-primary rounded-circle" type="button" id="addLinkButton" title="リンクを追加">
+                                        <i class="fas fa-link"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 一時保存してコンセプトテスト作成ボタン -->
+                        <button type="submit" name="action" value="temp_save" class="btn btn-outline-primary">コンセプトテスト作成</button>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- サイドバー -->
+            <div class="col-md-3 bg-light">
+                <!-- ここにサイドバーの内容 -->
+                <div class="card">
+                    <div class="card-body">
+                        <!-- 割り当てクラス選択セクション -->
+                        <div class="card-body">
+                            <!-- 最初に表示されるクラスボタン -->
+                            <div class="form-group">
+                                <button class="btn btn-primary" type="button" id="showClassesButton">{{ class_data.subject }} {{ class_data.class_name }}</button>
+                            </div>
+                            <!-- ユーザーが作成したクラス一覧 -->
+                            <div class="card" id="classSelectionCard" style="display: none;">
+                                <div class="card-body">
+                                    {% for cls in user_classes %}
+                                        <!-- クラスのチェックボックス -->
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="{{ cls.id }}" id="class{{ cls.id }}">
+                                            <label class="form-check-label" for="class{{ cls.id }}">
+                                                {{ cls.subject }} {{ cls.class_name }}
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+            
+                        <!-- 生徒選択セクション -->
+                        <div class="card-body">
+                            <!-- 生徒選択ボタン -->
+                            <div class="form-group">
+                                <button class="btn btn-primary" type="button" id="showStudentsButton">割り当てる生徒</button>
+                            </div>
+                            <!-- 生徒選択リスト -->
+                            <div class="card" id="studentsSelectionCard" style="display: none;">
+                                <div class="card-body">
+                                    {% for student in students %}
+                                        <!-- 生徒のチェックボックス -->
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="{{ student.id }}" id="student{{ student.id }}" name="assigned_students">
+                                            <label class="form-check-label" for="student{{ student.id }}">
+                                                {{ student.username }}
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 提出期限フィールド -->
+                        <div class="form-group">
+                            <label for="dueDateTime">提出期限</label>
+                            <input type="datetime-local" class="form-control" id="dueDateTime" name="due_date_time" value="{{ editing_assignment.due_date.strftime('%Y-%m-%dT%H:%M') if editing_assignment and editing_assignment.due_date else '' }}">
+                        </div>
+
+                        <!-- 座席表選択 -->
+                        <div class="form-group">
+                            <label for="seatAssignmentSelect">座席表</label>
+                            <select class="form-control" id="seatAssignmentSelect" name="seat_assignment_id">
+                                <!-- ここにバックエンドから取得した座席割り当てのリストを追加 -->
+                                {% for seat_assignment in seat_assignments %}
+                                <option value="{{ seat_assignment.id }}"
+                                        {% if editing_assignment and editing_assignment.seat_assignment_id == seat_assignment.id %}
+                                        selected
+                                        {% endif %}>
+                                    {{ seat_assignment.title }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+            
+                        <!-- トピック-->
+                        <div class="form-group">
+                            <label for="topicSelect">トピック</label>
+                            <select class="form-control" id="topicSelect" name="topic_id">
+                                {% for topic_item in topic %}
+                                <option value="{{ topic_item.id }}"
+                                        {% if editing_assignment and editing_assignment.topic_id == topic_item.id %}
+                                        selected
+                                        {% endif %}>
+                                    {{ topic_item.title }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>             
+</div>
+<script>
+    document.getElementById('showClassesButton').addEventListener('click', function() {
+        var classCard = document.getElementById('classSelectionCard');
+        if (classCard.style.display === 'none') {
+            classCard.style.display = 'block';
+        } else {
+            classCard.style.display = 'none';
+        }
+    });
+    document.getElementById('showStudentsButton').addEventListener('click', function() {
+        var studentsCard = document.getElementById('studentsSelectionCard');
+        if (studentsCard.style.display === 'none') {
+            studentsCard.style.display = 'block';
+        } else {
+            studentsCard.style.display = 'none';
+        }
+    });
+    
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="{{ url_for('crud.static', filename='js/assignment.js') }}"></script>
+</body>
+</html>

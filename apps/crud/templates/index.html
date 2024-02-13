@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>メイン</title>
+
+    <!-- Custom fonts for this template-->
+    <link rel="icon" type="image/png" href="static/image/buturiicon.png">
+    <link href="{{ url_for('static', filename='css/all.min.css') }}" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+    <link href="{{url_for('crud.static', filename='css/index.css')}}" rel="stylesheet" >
+
+
+    <!-- Custom styles for this template-->
+    <link href="{{ url_for('static', filename='css/sb-admin-2.min.css') }}" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        {% include 'sidebar.html' %}
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                {% include 'topbar.html' %}
+                <!-- End of Topbar -->
+
+                <!-- ページコンテンツ -->
+                <style>
+                    .card-link {
+                        text-decoration: none; /* リンクの下線を削除 */
+                        color: inherit; /* テキストの色を継承 */
+                    }
+                </style>
+                <div class="container-fluid">
+
+                    <!-- ページヘッディング -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Myクラス</h1>
+                        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                            <!-- クラス作成ボタン -->
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createClassModal" style="margin-right: 10px;">
+                                クラスを作成
+                            </button>
+
+                            <!-- クラス作成用モーダル -->
+                            <div class="modal fade" id="createClassModal" tabindex="-1" role="dialog" aria-labelledby="createClassModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="createClassModalLabel">クラスを作成</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- クラス作成用入力フォーム -->
+                                            <form id="createClassForm" action="{{ url_for('crud.create_class') }}" method="POST" novalidate="novalidate">
+                                                {{ form_make_class.csrf_token }}
+                                                <div class="form-group">
+                                                    {{ form_make_class.class_name(id="className", class="form-control", placeholder="クラス名") if form_make_class.class_name }}
+                                                </div>
+                                                <div class="form-group">
+                                                    {{ form_make_class.subject(id="classDetails", class="form-control", placeholder="科目") if form_make_class.subject }}
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+                                            <button type="submit" form="createClassForm" class="btn btn-primary">作成</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#joinClassModal">
+                                クラスに参加
+                            </button>
+                            
+
+                            <!-- クラス参加用モーダル -->
+                            <div class="modal fade" id="joinClassModal" tabindex="-1" role="dialog" aria-labelledby="joinClassModalLabel" aria-hidden="true">
+                                <!-- モーダルの内容 -->
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="joinClassModalLabel">クラスに参加</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- クラス参加用入力フォーム -->
+                                            <form id="joinClassForm" action="{{ url_for('crud.join_class') }}" method="POST" novalidate="novalidate">
+                                                <!-- フォームの内容 -->
+                                                {{ form_join_class.csrf_token }}
+                                                <div class="form-group">
+                                                    {{ form_join_class.class_code(id="classCode", class="form-control", placeholder="クラスコード") }}
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+                                            <button type="submit" form="joinClassForm" class="btn btn-primary">参加</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+
+                    <!-- Content Row -->
+                    <div class="row" id="card-container">
+                        <!-- 既存のクラスカードを表示するループ -->
+                        {% for cls in classes %}
+                            <a href="{{ url_for('crud.class_detail', class_id=cls.id) }}" class="col-xl-3 col-md-6 mb-4">                      
+                                <div class=" border-left-primary shadow h-100 py-2 card">
+                                    <!-- 写真を背景として表示する部分 -->
+                                    <div class="card-image-container" style="background-image: url('static_crud/img/undraw_posting_photo.svg');">
+                                        <!-- 写真の内容はCSSで調整 -->
+                                    </div>
+                                    <!-- カードの内容 -->
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                    {{ cls.class_name }}
+                                                </div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ cls.subject }}</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                        {% for cls in joined_classes %}
+                            <a href="{{ url_for('crud.class_detail', class_id=cls.id) }}" class="col-xl-3 col-md-6 mb-4">                      
+                                <div class=" border-left-primary shadow h-100 py-2 card">
+                                    <!-- 写真を背景として表示する部分 -->
+                                    <div class="card-image-container" style="background-image: url('static_crud/img/undraw_posting_photo.svg');">
+                                        <!-- 写真の内容はCSSで調整 -->
+                                    </div>
+                                    <!-- カードの内容 -->
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                    {{ cls.class_name }}
+                                                </div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ cls.subject }}</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            {% include 'footer.html' %}
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    {% include 'scroll-to-top.html' %}
+
+    <!-- Logout Modal-->
+    {% include 'logout-modal.html' %}
+    
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="{{ url_for('static', filename='js/jquery.easing.min.js') }}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="{{ url_for('static', filename='js/sb-admin-2.min.js') }}"></script>
+
+    <!-- Page level plugins -->
+    <script src="{{ url_for('static', filename='js/Chart.min.js') }}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{{ url_for('static', filename='js/chart-area-demo.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chart-pie-demo.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chart-bar-demo.js') }}"></script>
+
+    <script>
+        // フォームの表示・非表示を切り替える関数
+        function toggleForm() {
+            var formContainer = document.getElementById('formContainer');
+            if (formContainer.style.display === 'none') {
+                formContainer.style.display = 'flex';
+            } else {
+                formContainer.style.display = 'none';
+            }
+        }
+
+    </script>
+    
+    
+    
+</body>
+
+</html>

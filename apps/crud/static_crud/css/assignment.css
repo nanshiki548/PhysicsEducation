@@ -1,0 +1,73 @@
+#specificCard .card-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#specificCard .btn-primary {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#specificCard .btn i {
+    font-size: 1.5rem;
+}
+#specificCard .custom-file-input {
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+.card-img-small {
+    max-width: 70px;
+    max-height: 70px;
+    width: auto;
+    height: auto;
+}
+.remove-card-btn {
+    font-size: 1.5rem; /* アイコンサイズ */
+    color: gray; /* アイコンの初期色 */
+    border: none; /* ボーダーを削除 */
+    background: none; /* 背景を削除 */
+}
+.remove-card-btn:hover {
+    color: black; /* ホバー時の色をグレーに */
+}
+.card-body {
+    padding: 1rem; /* 内部の余白を適切に設定 */
+}
+.btn-outline-primary {
+    border-radius: 5px; /* 角を少しだけ丸くする */
+}
+.btn-outline-primary:disabled {
+    color: grey; /* ボタンの文字色をグレーに設定 */
+    background-color: transparent; /* 背景を透明に設定 */
+    border-color: grey; /* ボタンの枠線をグレーに設定 */
+}
+.card {
+    padding-bottom: 30px;
+    margin-bottom: 30px;
+}
+#file-card .card {
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
+#addLinkButton .btn i {
+    font-size: 1.5rem; /* アイコンのサイズを調整 */
+}
+#addLinkButton .btn {
+    width: 50px; /* ボタンの幅を設定 */
+    height: 50px; /* ボタンの高さを設定 */
+    padding: 0; /* パディングを削除 */
+}
+#addLinkButton .btn .custom-file-input {
+    opacity: 0; /* ファイル入力を透明に設定 */
+    position: absolute; /* ファイル入力を覆い隠す */
+    width: 100%; /* ファイル入力の幅をボタンと同じにする */
+    height: 100%; /* ファイル入力の高さをボタンと同じにする */
+    cursor: pointer; /* カーソルを指に設定 */
+}
